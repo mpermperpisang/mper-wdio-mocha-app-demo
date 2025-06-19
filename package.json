@@ -16,5 +16,13 @@
   "bugs": {
     "url": "https://github.com/mpermperpisang/mper-wdio-mocha-app-demo/issues"
   },
-  "homepage": "https://github.com/mpermperpisang/mper-wdio-mocha-app-demo#readme"
+  "homepage": "https://github.com/mpermperpisang/mper-wdio-mocha-app-demo#readme",
+  "devDependencies": {
+    "@wdio/appium-service": "^9.15.0",
+    "@wdio/cli": "^9.15.0",
+    "@wdio/local-runner": "^9.15.0",
+    "@wdio/mocha-framework": "^9.15.0",
+    "appium": "^2.19.0",
+    "chai": "^5.2.0"
+  }
 }
