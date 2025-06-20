@@ -4,6 +4,13 @@
 - NodeJS v22.15.0
 - NPM v10.9.2
 
+### Framework + Library + Reporter
+- WebdriverIO
+- Mocha
+- Chai
+- Appium
+- Allure
+
 ### How to Setup
 Without Makefile
 - `npm ci`
