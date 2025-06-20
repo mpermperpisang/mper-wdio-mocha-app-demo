@@ -8,9 +8,6 @@ describe('ANDROID Automation Testing - https://trustwallet.com/id', () => {
     await WalletPage.skipNotification();
     await WalletPage.validateBuyCryptoButton();
     await WalletPage.validateDepositCryptoButton();
-
-    const result = await WalletPage.validateWalletCreated();
-
-    expect(result).to.be.true;
+    expect(await WalletPage.validateWalletCreated()).to.be.true;
   });
 });
