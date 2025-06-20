@@ -5,6 +5,7 @@ class WalletPage {
     this.generatedPasscode = ''; // cache for reuse
   }
 
+  // TODO: need to move to element.properties later
   get createNewWalletButton() { return $('//*[@text="Create new wallet"]'); }
   get skipNotifButton() { return $('//*[@text="Skip, I\'ll do it later"]'); }
   get walletIsReadyMessage() { return $("//*[@text='Brilliant, your wallet is ready!']"); }
