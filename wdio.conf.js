@@ -1,3 +1,15 @@
+const { exec, spawn } = require('child_process');
+const { promisify } = require('util');
+const execAsync = promisify(exec);
+const fs = require('fs');
+const { removeSync } = require('fs-extra');
+
+require('dotenv').config();
+
+// Ambil AVD dari environment, fallback default jika kosong
+const AVD_NAME = process.env.AVD_NAME || 'mpermperpisang';
+const APK_NAME = './apk/trustwallet.apk';
+
 exports.config = {
     //
     // ====================
@@ -51,7 +63,11 @@ exports.config = {
     // https://saucelabs.com/platform/platform-configurator
     //
     capabilities: [{
-        browserName: 'chrome'
+        platformName: 'Android',
+        'appium:deviceName': 'emulator-5554', // atau real device
+        'appium:automationName': 'UiAutomator2',
+        'appium:app': require('path').resolve(APK_NAME),
+        'appium:autoGrantPermissions': true
     }],
 
     //
@@ -61,7 +77,7 @@ exports.config = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'info',
+    logLevel: 'error',
     //
     // Set specific log levels per logger
     // loggers:
@@ -146,8 +162,43 @@ exports.config = {
      * @param {object} config wdio configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      */
-    // onPrepare: function (config, capabilities) {
-    // },
+    
+  onPrepare: () => {
+    fs.access(APK_NAME, fs.F_OK, (err) => {
+      if (err) {
+        throw err;
+      }
+    });
+
+    removeSync('./allure-results/');
+    removeSync('./allure-report/');
+    removeSync('./cucumber-reports/');
+
+    process.stdout.write('Starting Android emulator...\n');
+
+    const emulatorProcess = spawn(
+      `${process.env.ANDROID_HOME}/emulator/emulator`,
+      ['-avd', AVD_NAME],
+    );
+
+    emulatorProcess.stdout.on('data', (data) => {
+      process.stdout.write(data);
+    });
+
+    emulatorProcess.stderr.on('data', (data) => {
+      process.stderr.write(data);
+    });
+
+    emulatorProcess.on('error', (error) => {
+      process.stderr.write(`Error starting emulator: ${error.message}`);
+    });
+
+    emulatorProcess.on('close', (code) => {
+      if (code !== 0) {
+        process.stderr.write(`Emulator exited with code ${code}`);
+      }
+    });
+  },
     /**
      * Gets executed before a worker process is spawned and can be used to initialize specific service
      * for that worker as well as modify runtime environments in an async fashion.
@@ -274,8 +325,40 @@ exports.config = {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {<Object>} results object containing test results
      */
-    // onComplete: function(exitCode, config, capabilities, results) {
-    // },
+  onComplete: async () => {
+    process.stdout.write('Uninstalling the app...');
+    exec(
+      '/opt/homebrew/bin/adb -s emulator-5554 uninstall id.kompas.app',
+      (error, stdout, stderr) => {
+        if (error) {
+          process.stderr.write(`Error uninstalling app: ${error.message}\n`);
+          return;
+        }
+
+        if (stderr) {
+          process.stderr.write(`Uninstall stderr: ${stderr}\n`);
+          return;
+        }
+
+        process.stdout.write(`Uninstall stdout: ${stdout}\n`);
+      },
+    );
+
+    process.stdout.write('Stopping Android emulator...');
+    exec('/opt/homebrew/bin/adb -s emulator-5554 emu kill', (error, stdout, stderr) => {
+      if (error) {
+        process.stderr.write(`Error stopping emulator: ${error.message}\n`);
+        return;
+      }
+
+      if (stderr) {
+        process.stderr.write(`Emulator stderr: ${stderr}\n`);
+        return;
+      }
+
+      process.stdout.write(`Emulator stdout: ${stdout}\n`);
+    });
+  },
     /**
     * Gets executed when a refresh happens.
     * @param {string} oldSessionId session ID of the old session
