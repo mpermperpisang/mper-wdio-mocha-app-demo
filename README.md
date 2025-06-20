@@ -11,6 +11,13 @@ Without Makefile
 With Makefile
 - `make ci`
 
+Create .env
+- `cp env.sample .env`
+```
+AVD_NAME=<your_android_emulator_name>
+ANDROID_HOME=<your_android_home_path>
+```
+
 ### How to Run
 Without Docker
 - `npx wdio run ./wdio.conf.js` or
