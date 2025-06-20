@@ -6,6 +6,8 @@ describe('Trust Wallet - Create Wallet Flow (POM)', () => {
     await WalletPage.tapCreateNewWalletButton();
     await WalletPage.inputPasscode();
     await WalletPage.skipNotification();
+    await WalletPage.validateBuyCryptoButton();
+    await WalletPage.validateDepositCryptoButton();
 
     const result = await WalletPage.validateWalletCreated();
 

@@ -8,6 +8,8 @@ class WalletPage {
   get createNewWalletButton() { return $('//*[@text="Create new wallet"]'); }
   get skipNotifButton() { return $('//*[@text="Skip, I\'ll do it later"]'); }
   get walletIsReadyMessage() { return $("//*[@text='Brilliant, your wallet is ready!']"); }
+  get buyCryptoButton() { return $("//*[@text='Buy Crypto']") }
+  get depositCryptoButton() { return $("//*[@text='Deposit Crypto']") }
 
   async tapCreateNewWalletButton() {
     await this.createNewWalletButton.waitForDisplayed({ timeout: 10000 });
@@ -40,7 +42,18 @@ class WalletPage {
 
   async validateWalletCreated() {
     await this.walletIsReadyMessage.waitForDisplayed({ timeout: 20000 });
-    return this.walletIsReadyMessage.isDisplayed();
+
+    return this.walletIsReadyMessage.isEnabled();
+  }
+
+  async validateBuyCryptoButton() {
+    await this.buyCryptoButton.waitForDisplayed({ timeout: 20000 });
+    await this.buyCryptoButton.isEnabled();
+  }
+
+  async validateDepositCryptoButton() {
+    await this.depositCryptoButton.waitForDisplayed({ timeout: 20000 });
+    await this.depositCryptoButton.isEnabled();
   }
 }
 
