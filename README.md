@@ -18,6 +18,8 @@ AVD_NAME=<your_android_emulator_name>
 ANDROID_HOME=<your_android_home_path>
 ```
 
+For ANDROID_HOME, you can run `echo $ANDROID_HOME` to know the full path.
+
 ### How to Run
 Without Docker
 - `npx wdio run ./wdio.conf.js` or
